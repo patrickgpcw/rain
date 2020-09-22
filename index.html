@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rain</title>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+    <canvas id="canvas" width="600" height="600"></canvas>
+</body>
+<script type="application/javascript">
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var rect = canvas.getBoundingClientRect();
+    var length = 100;
+    var raf;
+    var drops = [];
+    function drop (){
+        return {
+            x: Math.random() * canvas.width, 
+            y: Math.random() * (-20-canvas.height/2)-canvas.height/2,
+            width: 2,
+            height:Math.random() * 12,
+            vx: 0,
+            vy: Math.random() * 4,
+            color: 'blue',
+            draw: function() {
+                ctx.beginPath();
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.closePath();
+                ctx.fillStyle = this.color;
+                ctx.stroke();
+            }        
+        }
+    }
+
+    for(var i = 0; i < length; i++){
+        drops.push(drop());
+    }
+
+    function draw() {
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+        for(var i = 0; i < length; i++){
+            drops[i].draw();
+            drops[i].x += drops[i].vx;
+            drops[i].y += drops[i].vy;    
+            if(drops[i].y > rect.height){
+                drops[i].y = 0;
+                drops[i].x = Math.random() * canvas.width;
+            }
+        }
+        raf = window.requestAnimationFrame(draw);  
+    }
+
+    canvas.addEventListener('click', function(e) {
+        raf = window.requestAnimationFrame(draw);
+    });
+
+    for(var i = 0; i < length; i++){
+        drops[i].draw()
+    }
+
+</script>
+</html>
